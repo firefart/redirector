@@ -61,15 +61,14 @@ func main() {
 	}()
 
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGINT)
-	signal.Notify(c, syscall.SIGTERM)
+	signal.Notify(c, syscall.SIGTERM, syscall.SIGINT)
 	<-c
 	ctx, cancel := context.WithTimeout(context.Background(), wait)
 	defer cancel()
+	log.Info("shutting down")
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal(err)
 	}
-	log.Info("shutting down")
 	os.Exit(0)
 }
 
